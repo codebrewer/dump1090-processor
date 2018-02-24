@@ -2,7 +2,7 @@ import static org.gradle.api.tasks.wrapper.Wrapper.DistributionType
 
 buildscript {
   ext {
-    springBootVersion = '1.5.9.RELEASE'
+    springBootVersion = '1.5.10.RELEASE'
   }
   repositories {
     mavenCentral()
@@ -13,7 +13,6 @@ buildscript {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
 group = 'org.codebrewer'
@@ -24,9 +23,15 @@ repositories {
   mavenCentral()
 }
 
+ext['hibernate.version'] = '5.2.13.Final'
+
 dependencies {
+  compile('org.hibernate:hibernate-spatial:5.2.13.Final')
   compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile('org.springframework.boot:spring-boot-starter-data-jpa')
   compile('org.springframework.boot:spring-boot-starter-integration')
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compile('org.springframework.integration:spring-integration-ip')
   runtime('org.postgresql:postgresql')
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }
