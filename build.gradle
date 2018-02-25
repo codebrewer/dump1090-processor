@@ -1,17 +1,18 @@
+import static org.gradle.api.tasks.wrapper.Wrapper.DistributionType
+
 buildscript {
-	ext {
-		springBootVersion = '1.5.9.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+  ext {
+    springBootVersion = '1.5.10.RELEASE'
+  }
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+  }
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 
 group = 'org.codebrewer'
@@ -19,13 +20,22 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
+ext['hibernate.version'] = '5.2.13.Final'
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.boot:spring-boot-starter-integration')
-	runtime('org.postgresql:postgresql')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+  compile('org.hibernate:hibernate-spatial:5.2.13.Final')
+  compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile('org.springframework.boot:spring-boot-starter-data-jpa')
+  compile('org.springframework.boot:spring-boot-starter-integration')
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compile('org.springframework.integration:spring-integration-ip')
+  runtime('org.postgresql:postgresql')
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+wrapper {
+  distributionType = DistributionType.ALL
 }

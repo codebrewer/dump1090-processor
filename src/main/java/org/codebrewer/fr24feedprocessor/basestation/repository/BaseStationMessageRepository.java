@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package org.codebrewer.fr24feedprocessor;
+package org.codebrewer.fr24feedprocessor.basestation.repository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.codebrewer.fr24feedprocessor.basestation.entity.BaseStationMessage;
+import org.springframework.data.repository.CrudRepository;
 
 /**
- * Application entry point.
+ * Interface to a repository for the {@link BaseStationMessage} entity class.
  */
-@SpringBootApplication
-public class Fr24feedProcessorApplication {
-  public static void main(String[] args) {
-    SpringApplication.run(Fr24feedProcessorApplication.class, args);
-  }
+public interface BaseStationMessageRepository extends CrudRepository<BaseStationMessage, Long> {
 }
