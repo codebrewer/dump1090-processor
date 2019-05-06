@@ -14,4 +14,4 @@ cache:
 
 install: echo "skipping Travis CI's default './gradlew assemble' step"
 
-script: ./gradlew build --continue
+script: ./gradlew build --exclude-task test --continue
