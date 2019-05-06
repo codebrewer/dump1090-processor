@@ -1,6 +1,7 @@
 # fR24feed Processor
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Build Status](https://api.travis-ci.org/codebrewer/fr24feed-processor.svg?branch=develop)](http://travis-ci.org/codebrewer/fr24feed-processor)
 
 ## About
 
