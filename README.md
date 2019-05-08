@@ -1,4 +1,4 @@
-# fR24feed Processor
+# fr24feed Processor
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Build Status](https://api.travis-ci.org/codebrewer/fr24feed-processor.svg?branch=develop)](http://travis-ci.org/codebrewer/fr24feed-processor)
@@ -19,7 +19,6 @@ Pi.
 ## Requirements
 
 * JDK 1.8
-* (Optional) A PostgreSQL database server with various PostGIS extensions if persistence of ADS-B messages is enabled
 
 ## Building and Testing
 
@@ -35,25 +34,23 @@ gradlew.bat build
 
 The build generates a 'fat' jar.
 
-There are currently no tests on the `master` branch :blush:
-
 ## Usage
 
 The application's main class is `org.codebrewer.fr24feedprocessor.Fr24feedProcessorApplication`.
 
-At present the application can parse messages in the "SBS-1 BaseStation" format and (optionally) persist them to a
-PostgreSQL database (chosen to have a play with the location/mapping objects provided by the PostGIS extension).
+At present the application can parse messages in the "SBS-1 BaseStation" format and persist them to an embedded H2
+database with the GeoDB spatial extension installed.
 
 ## Application Monitoring and Runtime Control
 
 Various managed attributes and operations are exposed to JMX and can therefore be viewed and changed using a client such
-as `jconsole`. The Spring Boot Actuator is/can be enabled and provides a large number of informational REST endpoints.
+as `jconsole`. The Spring Boot Actuator can be enabled and provides a large number of informational REST endpoints.
 
 ## Acknowledgments
 
 The **fr24feed Processor** project uses [Spring Boot](https://projects.spring.io/spring-boot/) and is built by
-[Gradle](https://gradle.org). It optionally persists data to a [PostgreSQL](https://www.postgresql.org) database that
-has the [PostGIS](https://postgis.net) extensions installed.
+[Gradle](https://gradle.org). It optionally persists data to an embedded [H2](https://www.h2database.com/html/main.html)
+database that has the [GeoDB](https://github.com/jdeolive/geodb) extension installed.
 
 **fr24feed Processor** is not associated with Flightradar24 in any way.
 

@@ -22,6 +22,9 @@ sourceCompatibility = 1.8
 
 repositories {
   mavenCentral()
+  maven {
+    url = 'https://repo.boundlessgeo.com/main'
+  }
 }
 
 ext['hibernate.version'] = '5.4.2.Final'
@@ -34,6 +37,7 @@ dependencies {
   compile('org.springframework.boot:spring-boot-starter-web')
   compile('org.springframework.integration:spring-integration-ip')
   runtime('org.postgresql:postgresql')
+  runtime('org.opengeo:geodb:0.9')
   testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

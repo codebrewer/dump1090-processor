@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Mark Scott
+ * Copyright 2018, 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,8 +73,9 @@ public class BaseStationIntegrationConfiguration {
   }
 
   @Bean
-  public IntegrationFlow tcpMessageClient(@Value("${fr24feed.host}") String host,
-                                          @Value("${basestation.feed.port}") int port) {
+  public IntegrationFlow tcpMessageClient(@Value("${fr24feed.host:localhost}") String host,
+                                          @Value("${basestation.feed.port:30003}") int port) {
+    LOGGER.info("BaseStation message source: {}:{}", host, port);
     final TcpNetClientConnectionFactory clientConnectionFactory =
         new TcpNetClientConnectionFactory(host, port);
 
