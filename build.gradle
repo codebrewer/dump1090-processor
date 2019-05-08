@@ -2,7 +2,7 @@ import static org.gradle.api.tasks.wrapper.Wrapper.DistributionType
 
 buildscript {
   ext {
-    springBootVersion = '1.5.10.RELEASE'
+    springBootVersion = '2.1.4.RELEASE'
   }
   repositories {
     mavenCentral()
@@ -14,6 +14,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group = 'org.codebrewer'
 version = '0.0.1-SNAPSHOT'
@@ -23,10 +24,10 @@ repositories {
   mavenCentral()
 }
 
-ext['hibernate.version'] = '5.2.13.Final'
+ext['hibernate.version'] = '5.4.2.Final'
 
 dependencies {
-  compile('org.hibernate:hibernate-spatial:5.2.13.Final')
+  compile('org.hibernate:hibernate-spatial:5.4.2.Final')
   compile('org.springframework.boot:spring-boot-starter-actuator')
   compile('org.springframework.boot:spring-boot-starter-data-jpa')
   compile('org.springframework.boot:spring-boot-starter-integration')
