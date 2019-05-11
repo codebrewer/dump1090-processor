@@ -15,3 +15,6 @@ cache:
 install: echo "skipping Travis CI's default './gradlew assemble' step"
 
 script: ./gradlew build --continue
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
