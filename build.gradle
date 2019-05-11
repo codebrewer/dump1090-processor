@@ -40,6 +40,8 @@ dependencies {
   runtime('org.postgresql:postgresql')
   runtime('org.opengeo:geodb:0.9')
   testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile('org.junit.jupiter:junit-jupiter:5.4.2')
+  testCompile('org.mockito:mockito-junit-jupiter:2.27.0')
 }
 
 jacocoTestReport {
@@ -52,6 +54,7 @@ jacocoTestReport {
 
 test {
   finalizedBy jacocoTestReport
+  useJUnitPlatform()
 }
 
 wrapper {
