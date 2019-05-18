@@ -20,7 +20,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class MessageTypeTest {
-
   private static void assertMessageTokenCount(MessageType messageType, int expectedTokenCount) {
     Assertions.assertThat(messageType.getMessageTokenCount()).isEqualTo(expectedTokenCount);
   }

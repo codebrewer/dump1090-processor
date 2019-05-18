@@ -20,7 +20,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class DomainUtilsTest {
-
   private static void assertExpectedMessageType(MessageType messageType) {
     Assertions.assertThat(DomainUtils.isExpectedMessageType(messageType)).isTrue();
   }
@@ -100,5 +99,20 @@ class DomainUtilsTest {
   @Test
   void shouldNotExpectNullStatusMessageType() {
     assertNotExpectedStatusMessageType(null);
+  }
+
+  @Test
+  void shouldTrimCallSignOfLeadingAndTrailingWhitespace() {
+    Assertions.assertThat(DomainUtils.getValidatedCallSign("  ABCD  ")).isEqualTo("ABCD");
+  }
+
+  @Test
+  void shouldTruncateCallSignAtEightCharacters() {
+    Assertions.assertThat(DomainUtils.getValidatedCallSign("123456789")).isEqualTo("12345678");
+  }
+
+  @Test
+  void shouldReturnNullCallSignForNullInput() {
+    Assertions.assertThat(DomainUtils.getValidatedCallSign(null)).isNull();
   }
 }

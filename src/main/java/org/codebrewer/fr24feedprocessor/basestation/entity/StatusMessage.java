@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Mark Scott
+ * Copyright 2018, 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.codebrewer.fr24feedprocessor.basestation.domain.StatusMessageType;
  */
 @Entity
 @DiscriminatorValue("STA")
-class StatusMessage extends BaseStationMessage {
+public class StatusMessage extends BaseStationMessage {
   @Column(length = 3)
   @Enumerated(EnumType.STRING)
   private StatusMessageType statusMessageType;
@@ -49,15 +49,11 @@ class StatusMessage extends BaseStationMessage {
     return statusMessageType;
   }
 
-  public void setStatusMessageType(StatusMessageType statusMessageType) {
-    this.statusMessageType = statusMessageType;
-  }
-
   /**
    * A builder for the {@code StatusMessage} entity type.
    */
   static class Builder extends BaseStationMessage.Builder<StatusMessage, Builder> {
-    private final StatusMessageType statusMessageType;
+    private StatusMessageType statusMessageType;
 
     /**
      * Sole constructor for this class, with parameters for properties common to all BaseStation
@@ -65,18 +61,17 @@ class StatusMessage extends BaseStationMessage {
      *
      * @param icaoAddress the 24 bit address assigned by the ICAO to an aircraft transponder,
      * represented as a 6 digit hexadecimal number, not null
-     * @param creationTimestamp the instant at which the message was created
-     * @param receptionTimestamp the instant at which the message was received
-     * @param statusMessageType the type of status message to be built
+     * @param timestamp the instant at which the message was received, not null
      */
-    Builder(String icaoAddress,
-            Instant creationTimestamp,
-            Instant receptionTimestamp,
-            StatusMessageType statusMessageType) {
-      super(icaoAddress, creationTimestamp, receptionTimestamp);
-      this.statusMessageType = statusMessageType;
+    Builder(String icaoAddress, Instant timestamp) {
+      super(icaoAddress, timestamp);
     }
 
+    Builder statusMessageType(StatusMessageType statusMessageType) {
+      this.statusMessageType = statusMessageType;
+
+      return self();
+    }
     @Override
     StatusMessage build() {
       return new StatusMessage(this);

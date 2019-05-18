@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Mark Scott
+ * Copyright 2018, 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,15 @@
 package org.codebrewer.fr24feedprocessor.basestation.entity;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import org.codebrewer.fr24feedprocessor.basestation.domain.DomainUtils;
 import org.codebrewer.fr24feedprocessor.basestation.domain.MessageType;
 import org.codebrewer.fr24feedprocessor.basestation.domain.StatusMessageType;
+import org.codebrewer.fr24feedprocessor.basestation.domain.TransmissionType;
 import org.geolatte.geom.G2D;
 import org.geolatte.geom.Point;
 import org.geolatte.geom.crs.CrsRegistry;
@@ -35,6 +41,7 @@ public class EntityUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(EntityUtils.class);
   private static final Geographic2DCoordinateReferenceSystem COORDINATE_REFERENCE_SYSTEM =
       CrsRegistry.getGeographicCoordinateReferenceSystemForEPSG(4326);
+  private static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
   private static Instant parseTimestamp(String dateToken, String timeToken) {
     if (StringUtils.isEmpty(dateToken) || StringUtils.isEmpty(timeToken)) {
@@ -51,7 +58,10 @@ public class EntityUtils {
       timeToken = timeToken.substring(0, 12);
     }
 
-    return Instant.parse(String.format("%sT%sZ", dateToken.replaceAll("/", "-"), timeToken));
+    final LocalDate localDate = LocalDate.parse(dateToken, DATE_FORMATTER);
+    final LocalTime localTime = LocalTime.parse(timeToken);
+
+    return LocalDateTime.of(localDate, localTime).atZone(ZoneId.systemDefault()).toInstant();
   }
 
   private static Short tokenAsShort(String token) {
@@ -95,23 +105,22 @@ public class EntityUtils {
    * @param csvMessageText the comma-separated value text representation of a message, not null
    *
    * @return a {@code BaseStationMessage} created by parsing the CSV message text
+   *
+   * @throws IllegalArgumentException if parsing fails
    */
   public static BaseStationMessage fromCsvMessageText(String csvMessageText) {
     final String[] tokens =
         StringUtils.commaDelimitedListToStringArray(StringUtils.trimWhitespace(csvMessageText));
 
     if (tokens.length == 0) {
-      LOGGER.warn("Message token array has zero length");
-
-      return null;
+      throw new IllegalArgumentException("Message token array has zero length");
     }
 
     final MessageType messageType = MessageType.valueOf(tokens[0]);
 
     if (!DomainUtils.isExpectedMessageType(messageType)) {
-      LOGGER.error("Unexpected message type: '{}'", messageType);
-
-      return null;
+      throw new IllegalArgumentException(
+          String.format("Unexpected message type: '%s'", messageType));
     }
 
     final int requiredTokenCount = messageType.getMessageTokenCount();
@@ -123,21 +132,21 @@ public class EntityUtils {
 
     final String icaoAddress = tokens[4];
     final Instant creationTimestamp = parseTimestamp(tokens[6], tokens[7]);
-    final Instant receptionTimestamp = parseTimestamp(tokens[8], tokens[9]);
 
     switch (messageType) {
       case AIR:
         final NewAircraftMessage.Builder newAircraftMessageBuilder =
-            new NewAircraftMessage.Builder(icaoAddress, creationTimestamp, receptionTimestamp);
+            new NewAircraftMessage.Builder(icaoAddress, creationTimestamp);
 
         return newAircraftMessageBuilder.build();
       case ID:
         final IdMessage.Builder idMessageBuilder =
-            new IdMessage.Builder(icaoAddress, creationTimestamp, receptionTimestamp);
+            new IdMessage.Builder(icaoAddress, creationTimestamp);
 
-        return idMessageBuilder.callSign(tokens[10]).build();
+        return idMessageBuilder.callSign(DomainUtils.getValidatedCallSign(tokens[10])).build();
       case MSG:
-        final Short transmissionType = tokenAsShort(tokens[1]);
+        final TransmissionType transmissionType =
+            TransmissionType.getByRawValue(tokenAsShort(tokens[1]));
 
         if (transmissionType == null) {
           LOGGER.error("Unable to parse transmission type: '{}'", tokens[1]);
@@ -146,14 +155,14 @@ public class EntityUtils {
         }
 
         final TransmissionMessage.Builder transmissionMessageBuilder =
-            new TransmissionMessage.Builder(
-                icaoAddress, creationTimestamp, receptionTimestamp, transmissionType);
+            new TransmissionMessage.Builder(icaoAddress, creationTimestamp)
+                .transmissionType(transmissionType);
 
         switch (transmissionType) {
-          case 1: // Identification message
-            transmissionMessageBuilder.callSign(tokens[10]);
+          case IDENTIFICATION_AND_CATEGORY:
+            transmissionMessageBuilder.callSign(DomainUtils.getValidatedCallSign(tokens[10]));
             break;
-          case 2: // Surface position message
+          case SURFACE_POSITION:
             transmissionMessageBuilder
                 .altitude(tokenAsFloat(tokens[11]))
                 .groundSpeed(tokenAsFloat(tokens[12]))
@@ -161,7 +170,7 @@ public class EntityUtils {
                 .position(tokensAsPosition(tokens[15], tokens[14]))
                 .onGround(tokenAsBoolean(tokens[21]));
             break;
-          case 3: // Airborne position message
+          case AIRBORNE_POSITION:
             transmissionMessageBuilder
                 .altitude(tokenAsFloat(tokens[11]))
                 .position(tokensAsPosition(tokens[15], tokens[14]))
@@ -170,20 +179,20 @@ public class EntityUtils {
                 .identActive(tokenAsBoolean(tokens[20]))
                 .onGround(tokenAsBoolean(tokens[21]));
             break;
-          case 4: // Airborne velocity message
+          case AIRBORNE_VELOCITY:
             transmissionMessageBuilder
                 .groundSpeed(tokenAsFloat(tokens[12]))
                 .track(tokenAsFloat(tokens[13]))
                 .verticalRate(tokenAsShort(tokens[16]));
             break;
-          case 5: // Surveillance altitude message
+          case SURVEILLANCE_ALTITUDE:
             transmissionMessageBuilder
                 .altitude(tokenAsFloat(tokens[11]))
                 .alert(tokenAsBoolean(tokens[18]))
                 .identActive(tokenAsBoolean(tokens[20]))
                 .onGround(tokenAsBoolean(tokens[21]));
             break;
-          case 6: // Surveillance identification message
+          case SURVEILLANCE_ID:
             transmissionMessageBuilder
                 .altitude(tokenAsFloat(tokens[11]))
                 .squawk(tokenAsShort(tokens[17]))
@@ -192,19 +201,19 @@ public class EntityUtils {
                 .identActive(tokenAsBoolean(tokens[20]))
                 .onGround(tokenAsBoolean(tokens[21]));
             break;
-          case 7: // Air to air message
+          case AIR_TO_AIR:
             transmissionMessageBuilder
                 .altitude(tokenAsFloat(tokens[11]))
                 .onGround(tokenAsBoolean(tokens[21]));
             break;
-          case 8: // "All call" reply message
+          case ALL_CALL_REPLY:
             transmissionMessageBuilder
                 .onGround(tokenAsBoolean(tokens[21]));
             break;
           default:
-            LOGGER.error("Unexpected transmission message type received: '{}'", transmissionType);
-
-            return null;
+            throw new IllegalArgumentException(
+                String.format(
+                    "Unexpected transmission message type received: '%s'", transmissionType));
         }
 
         return transmissionMessageBuilder.build();
@@ -212,20 +221,19 @@ public class EntityUtils {
         final StatusMessageType statusMessageType = StatusMessageType.valueOf(tokens[10]);
 
         if (!DomainUtils.isExpectedStatusMessageType(statusMessageType)) {
-          LOGGER.error("Unexpected status message type: '{}'", statusMessageType);
-
-          return null;
+          throw new IllegalArgumentException(
+              String.format("Unexpected status message type: '%s'", statusMessageType));
         }
 
         final StatusMessage.Builder statusMessageBuilder =
-            new StatusMessage.Builder(
-                icaoAddress, creationTimestamp, receptionTimestamp, statusMessageType);
+            new StatusMessage.Builder(icaoAddress, creationTimestamp)
+                .statusMessageType(statusMessageType);
 
         return statusMessageBuilder.build();
       default:
-        LOGGER.error("Unexpected message type received: '{}'", messageType);
-
-        return null;
+        throw new IllegalArgumentException(
+            String.format(
+                "Unexpected message type received: '%s'", messageType));
     }
   }
 
