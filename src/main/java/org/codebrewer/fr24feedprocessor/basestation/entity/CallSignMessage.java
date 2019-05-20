@@ -46,7 +46,7 @@ public abstract class CallSignMessage extends BaseStationMessage {
   /**
    * A builder for the {@code CallSignMessage} entity type.
    */
-  static abstract class Builder extends BaseStationMessage.Builder<CallSignMessage, Builder> {
+  public static abstract class Builder extends BaseStationMessage.Builder<CallSignMessage, Builder> {
     private String callSign;
 
     /**
@@ -61,7 +61,7 @@ public abstract class CallSignMessage extends BaseStationMessage {
       super(icaoAddress, timestamp);
     }
 
-    Builder callSign(String callSign) {
+    public Builder callSign(String callSign) {
       this.callSign = callSign;
 
       return self();

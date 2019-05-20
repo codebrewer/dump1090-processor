@@ -17,7 +17,6 @@
 package org.codebrewer.fr24feedprocessor.basestation.entity;
 
 import java.time.Instant;
-import java.util.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import org.codebrewer.fr24feedprocessor.basestation.domain.TransmissionType;
@@ -110,7 +109,7 @@ public class TransmissionMessage extends CallSignMessage {
   /**
    * A builder for the {@code TransmissionMessage} entity type.
    */
-  static class Builder extends CallSignMessage.Builder {
+  public static class Builder extends CallSignMessage.Builder {
     private TransmissionType transmissionType;
     private Float altitude;
     private Float groundSpeed;
@@ -131,12 +130,12 @@ public class TransmissionMessage extends CallSignMessage {
      * represented as a 6 digit hexadecimal number, not null
      * @param creationTimestamp the instant at which the message was received, not null
      */
-    Builder(String icaoAddress, Instant creationTimestamp) {
+    public Builder(String icaoAddress, Instant creationTimestamp) {
       super(icaoAddress, creationTimestamp);
     }
 
     @Override
-    TransmissionMessage build() {
+    public TransmissionMessage build() {
       return new TransmissionMessage(this);
     }
 
@@ -145,67 +144,67 @@ public class TransmissionMessage extends CallSignMessage {
       return this;
     }
 
-    Builder transmissionType(TransmissionType transmissionType) {
+    public Builder transmissionType(TransmissionType transmissionType) {
       this.transmissionType = transmissionType;
 
       return self();
     }
 
-    Builder altitude(Float altitude) {
+    public Builder altitude(Float altitude) {
       this.altitude = altitude;
 
       return self();
     }
 
-    Builder groundSpeed(Float groundSpeed) {
+    public Builder groundSpeed(Float groundSpeed) {
       this.groundSpeed = groundSpeed;
 
       return self();
     }
 
-    Builder track(Float track) {
+    public Builder track(Float track) {
       this.track = track;
 
       return self();
     }
 
-    Builder position(Point<G2D> position) {
+    public Builder position(Point<G2D> position) {
       this.position = position;
 
       return self();
     }
 
-    Builder verticalRate(Short verticalRate) {
+    public Builder verticalRate(Short verticalRate) {
       this.verticalRate = verticalRate;
 
       return self();
     }
 
-    Builder squawk(Short squawk) {
+    public Builder squawk(Short squawk) {
       this.squawk = squawk;
 
       return self();
     }
 
-    Builder alert(Boolean alert) {
+    public Builder alert(Boolean alert) {
       this.alert = alert;
 
       return self();
     }
 
-    Builder emergency(Boolean emergency) {
+    public Builder emergency(Boolean emergency) {
       this.emergency = emergency;
 
       return self();
     }
 
-    Builder identActive(Boolean identActive) {
+    public Builder identActive(Boolean identActive) {
       this.identActive = identActive;
 
       return self();
     }
 
-    Builder onGround(Boolean onGround) {
+    public Builder onGround(Boolean onGround) {
       this.onGround = onGround;
 
       return self();

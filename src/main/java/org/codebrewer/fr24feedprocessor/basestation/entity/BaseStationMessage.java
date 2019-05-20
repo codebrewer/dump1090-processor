@@ -99,7 +99,7 @@ public abstract class BaseStationMessage {
      *
      * @return a message of type {@link #<M>}
      */
-    abstract M build();
+    public abstract M build();
 
     /**
      * Gets this builder.

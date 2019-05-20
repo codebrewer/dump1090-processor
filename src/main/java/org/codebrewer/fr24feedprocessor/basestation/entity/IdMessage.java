@@ -39,7 +39,7 @@ public class IdMessage extends CallSignMessage {
   /**
    * A builder for the {@code IdMessage} entity type.
    */
-  static class Builder extends CallSignMessage.Builder {
+  public static class Builder extends CallSignMessage.Builder {
     /**
      * Sole constructor for this class, with parameters for properties common to all BaseStation
      * message types.
@@ -48,12 +48,12 @@ public class IdMessage extends CallSignMessage {
      * represented as a 6 digit hexadecimal number, not null
      * @param timestamp the instant at which the message was received, not null
      */
-    Builder(String icaoAddress, Instant timestamp) {
+    public Builder(String icaoAddress, Instant timestamp) {
       super(icaoAddress, timestamp);
     }
 
     @Override
-    IdMessage build() {
+    public IdMessage build() {
       return new IdMessage(this);
     }
 

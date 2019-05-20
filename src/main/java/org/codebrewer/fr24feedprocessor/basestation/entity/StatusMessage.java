@@ -52,7 +52,7 @@ public class StatusMessage extends BaseStationMessage {
   /**
    * A builder for the {@code StatusMessage} entity type.
    */
-  static class Builder extends BaseStationMessage.Builder<StatusMessage, Builder> {
+  public static class Builder extends BaseStationMessage.Builder<StatusMessage, Builder> {
     private StatusMessageType statusMessageType;
 
     /**
@@ -63,17 +63,17 @@ public class StatusMessage extends BaseStationMessage {
      * represented as a 6 digit hexadecimal number, not null
      * @param timestamp the instant at which the message was received, not null
      */
-    Builder(String icaoAddress, Instant timestamp) {
+    public Builder(String icaoAddress, Instant timestamp) {
       super(icaoAddress, timestamp);
     }
 
-    Builder statusMessageType(StatusMessageType statusMessageType) {
+    public Builder statusMessageType(StatusMessageType statusMessageType) {
       this.statusMessageType = statusMessageType;
 
       return self();
     }
     @Override
-    StatusMessage build() {
+    public StatusMessage build() {
       return new StatusMessage(this);
     }
 

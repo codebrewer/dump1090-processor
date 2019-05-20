@@ -21,9 +21,10 @@ import static org.codebrewer.fr24feedprocessor.basestation.entity.BaseStationMes
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicLong;
 import org.codebrewer.fr24feedprocessor.basestation.entity.BaseStationMessage;
-import org.codebrewer.fr24feedprocessor.basestation.entity.EntityUtils;
+import org.codebrewer.fr24feedprocessor.basestation.service.MessageParsingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,6 +55,7 @@ public class BaseStationIntegrationConfiguration {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(BaseStationIntegrationConfiguration.class);
 
+  private final MessageParsingService messageParsingService;
   private final TcpReceivingChannelAdapter baseStationFeedAdapter;
 
   /**
@@ -63,11 +65,15 @@ public class BaseStationIntegrationConfiguration {
    * <p>The value of the parameter can be specified using the {@code basestation.feed.start.auto}
    * property and defaults to true if undefined.
    *
+   * @param messageParsingService a service for parsing messages received from the message feed
    * @param autoStart whether or not the feed should be established automatically at startup
    */
+  @Autowired
   public BaseStationIntegrationConfiguration(
+      MessageParsingService messageParsingService,
       @Value("${basestation.feed.start.auto:true}") boolean autoStart) {
     LOGGER.info("BaseStation message feed auto-start: {}", autoStart);
+    this.messageParsingService = messageParsingService;
     baseStationFeedAdapter = new TcpReceivingChannelAdapter();
     baseStationFeedAdapter.setAutoStartup(autoStart);
   }
@@ -117,7 +123,8 @@ public class BaseStationIntegrationConfiguration {
                                BaseStationMessage baseStationMessage = null;
 
                                try {
-                                 baseStationMessage = EntityUtils.fromCsvMessageText(payloadString);
+                                 baseStationMessage =
+                                     messageParsingService.parseCsvMessageText(payloadString);
                                } catch (Exception e) {
                                  LOGGER.error("Failed to parse message payload", e);
                                }

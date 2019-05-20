@@ -39,7 +39,7 @@ public class NewAircraftMessage extends BaseStationMessage {
   /**
    * A builder for the {@code NewAircraftMessage} entity type.
    */
-  static class Builder extends BaseStationMessage.Builder<NewAircraftMessage, Builder> {
+  public static class Builder extends BaseStationMessage.Builder<NewAircraftMessage, Builder> {
 
     /**
      * Sole constructor for this class, with parameters for properties common to all BaseStation
@@ -49,12 +49,12 @@ public class NewAircraftMessage extends BaseStationMessage {
      * represented as a 6 digit hexadecimal number, not null
      * @param timestamp the instant at which the message was received, not null
      */
-    Builder(String icaoAddress, Instant timestamp) {
+    public Builder(String icaoAddress, Instant timestamp) {
       super(icaoAddress, timestamp);
     }
 
     @Override
-    NewAircraftMessage build() {
+    public NewAircraftMessage build() {
       return new NewAircraftMessage(this);
     }
 

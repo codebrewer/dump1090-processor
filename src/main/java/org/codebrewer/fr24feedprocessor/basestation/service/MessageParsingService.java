@@ -1,5 +1,5 @@
 /*
- * Copyright 2018, 2019 Mark Scott
+ * Copyright 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.codebrewer.fr24feedprocessor.basestation.entity;
+package org.codebrewer.fr24feedprocessor.basestation.service;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -26,19 +26,26 @@ import org.codebrewer.fr24feedprocessor.basestation.domain.DomainUtils;
 import org.codebrewer.fr24feedprocessor.basestation.domain.MessageType;
 import org.codebrewer.fr24feedprocessor.basestation.domain.StatusMessageType;
 import org.codebrewer.fr24feedprocessor.basestation.domain.TransmissionType;
+import org.codebrewer.fr24feedprocessor.basestation.entity.BaseStationMessage;
+import org.codebrewer.fr24feedprocessor.basestation.entity.IdMessage;
+import org.codebrewer.fr24feedprocessor.basestation.entity.NewAircraftMessage;
+import org.codebrewer.fr24feedprocessor.basestation.entity.StatusMessage;
+import org.codebrewer.fr24feedprocessor.basestation.entity.TransmissionMessage;
 import org.geolatte.geom.G2D;
 import org.geolatte.geom.Point;
 import org.geolatte.geom.crs.CrsRegistry;
 import org.geolatte.geom.crs.Geographic2DCoordinateReferenceSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 /**
- * Utility methods related to the {@code BaseStationMessage} entity type.
+ * A service that can parse messages received from a BaseStation message feed.
  */
-public class EntityUtils {
-  private static final Logger LOGGER = LoggerFactory.getLogger(EntityUtils.class);
+@Service
+public class MessageParsingService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(MessageParsingService.class);
   private static final Geographic2DCoordinateReferenceSystem COORDINATE_REFERENCE_SYSTEM =
       CrsRegistry.getGeographicCoordinateReferenceSystemForEPSG(4326);
   private static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
@@ -98,6 +105,9 @@ public class EntityUtils {
     }
   }
 
+  public MessageParsingService() {
+  }
+
   /**
    * Creates a {@code BaseStationMessage} from its comma-separated value text representation as
    * received on the incoming message feed.
@@ -108,7 +118,7 @@ public class EntityUtils {
    *
    * @throws IllegalArgumentException if parsing fails
    */
-  public static BaseStationMessage fromCsvMessageText(String csvMessageText) {
+  public BaseStationMessage parseCsvMessageText(String csvMessageText) {
     final String[] tokens =
         StringUtils.commaDelimitedListToStringArray(StringUtils.trimWhitespace(csvMessageText));
 
@@ -235,9 +245,5 @@ public class EntityUtils {
             String.format(
                 "Unexpected message type received: '%s'", messageType));
     }
-  }
-
-  private EntityUtils() {
-    // Utility class
   }
 }
