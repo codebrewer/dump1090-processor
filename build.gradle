@@ -65,6 +65,14 @@ jacocoTestReport {
     html.enabled = true
     xml.enabled = true
   }
+
+  afterEvaluate {
+    getClassDirectories().setFrom(classDirectories.files.collect {
+      fileTree(dir: it, exclude: [
+              'org/codebrewer/fr24feedprocessor/Fr24feedProcessorApplication.class'
+      ])
+    })
+  }
 }
 
 test {

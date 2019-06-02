@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Mark Scott
+ * Copyright 2018, 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,12 @@ import org.springframework.messaging.handler.annotation.Payload;
  * An endpoint for consuming BaseStation messages.
  *
  * <p>By default, valid consumed messages are persisted to the BaseStation repository. A managed
- * operation is providet to give runtime control over persistence.
+ * operation is provided to give runtime control over persistence.
  */
 @MessageEndpoint
-@ManagedResource(description = "An endpoint for handling BaseStation messages")
+@ManagedResource(
+    objectName = "org.codebrewer.fr24feedprocessor:type=Control,name=BaseStationMessageEndpoint",
+    description = "An endpoint for handling BaseStation messages")
 public class BaseStationMessageEndpoint {
   private static final Logger LOGGER = LoggerFactory.getLogger(BaseStationMessageEndpoint.class);
 
@@ -73,7 +75,7 @@ public class BaseStationMessageEndpoint {
    *
    * @param baseStationMessage an incoming BaseStation message
    */
-  @SuppressWarnings("unused")
+  @SuppressWarnings("UnresolvedMessageChannel")
   @ServiceActivator(inputChannel = BASE_STATION_MESSAGE_CHANNEL_NAME)
   public void consume(@Payload BaseStationMessage baseStationMessage) {
     if (persistMessages && !Objects.equals(baseStationMessage, INVALID_MESSAGE)) {
