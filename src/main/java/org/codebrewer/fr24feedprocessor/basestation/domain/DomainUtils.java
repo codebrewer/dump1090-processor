@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Mark Scott
+ * Copyright 2018, 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,25 @@ public class DomainUtils {
   //
   private static final Set<StatusMessageType> EXPECTED_STATUS_MESSAGE_TYPES =
       Collections.unmodifiableSet(EnumSet.of(StatusMessageType.RM, StatusMessageType.SL));
+
+  /**
+   * Validates the call sign extracted from a message by trimming it of any leading and trailing
+   * whitespace, and truncating it at 8 characters if longer.
+   *
+   * @param callSign an aircraft call sign, null returns null
+   *
+   * @return the given call sign, trimmed of any leading or trailing whitespace and truncated at 8
+   * characters if longer
+   */
+  public static String getValidatedCallSign(String callSign) {
+    String validatedCallSign = callSign == null ? null : callSign.trim();
+
+    if (validatedCallSign != null && validatedCallSign.length() > 8) {
+      validatedCallSign = validatedCallSign.substring(0, 8);
+    }
+
+    return validatedCallSign;
+  }
 
   /**
    * Indicates whether or not a message of the given type is expected to be seen in the feed of

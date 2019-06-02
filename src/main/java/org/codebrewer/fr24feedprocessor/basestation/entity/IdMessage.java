@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Mark Scott
+ * Copyright 2018, 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @DiscriminatorValue("ID")
-class IdMessage extends CallSignMessage {
+public class IdMessage extends CallSignMessage {
   @SuppressWarnings("unused")
   IdMessage() {
     // No-arg constructor required by Hibernate
@@ -39,24 +39,21 @@ class IdMessage extends CallSignMessage {
   /**
    * A builder for the {@code IdMessage} entity type.
    */
-  static class Builder extends CallSignMessage.Builder {
+  public static class Builder extends CallSignMessage.Builder {
     /**
      * Sole constructor for this class, with parameters for properties common to all BaseStation
      * message types.
      *
      * @param icaoAddress the 24 bit address assigned by the ICAO to an aircraft transponder,
      * represented as a 6 digit hexadecimal number, not null
-     * @param creationTimestamp the instant at which the message was created
-     * @param receptionTimestamp the instant at which the message was received
+     * @param timestamp the instant at which the message was received, not null
      */
-    Builder(String icaoAddress,
-            Instant creationTimestamp,
-            Instant receptionTimestamp) {
-      super(icaoAddress, creationTimestamp, receptionTimestamp);
+    public Builder(String icaoAddress, Instant timestamp) {
+      super(icaoAddress, timestamp);
     }
 
     @Override
-    IdMessage build() {
+    public IdMessage build() {
       return new IdMessage(this);
     }
 

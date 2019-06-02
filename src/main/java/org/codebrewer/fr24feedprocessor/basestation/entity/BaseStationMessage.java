@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Mark Scott
+ * Copyright 2018, 2019 Mark Scott
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
 package org.codebrewer.fr24feedprocessor.basestation.entity;
 
 import java.time.Instant;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import javax.persistence.Transient;
 
 /**
  * Abstract base class for BaseStation message entities.
@@ -36,88 +37,35 @@ public abstract class BaseStationMessage {
    * An instance used when the raw data received for a message cannot be parsed into a valid
    * BaseStation message.
    */
-  public static BaseStationMessage INVALID_MESSAGE = new BaseStationMessage() {
+  public static final BaseStationMessage INVALID_MESSAGE = new BaseStationMessage() {
   };
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
-  @Transient
-  private Integer sessionId; // transient fr24feed/dump1090 property
-  @Transient
-  private Integer aircraftId; // transient fr24feed/dump1090 property
   @Column(length = 6, nullable = false)
   private String icaoAddress;
-  @Transient
-  private Integer flightId; // transient fr24feed/dump1090 property
   @Column(nullable = false)
-  private Instant creationTimestamp;
-  @Column(nullable = false)
-  private Instant receptionTimestamp;
+  private Instant timestamp;
 
   protected BaseStationMessage() {
   }
 
   protected BaseStationMessage(Builder builder) {
     icaoAddress = builder.icaoAddress;
-    creationTimestamp = builder.creationTimestamp;
-    receptionTimestamp = builder.receptionTimestamp;
+    timestamp = builder.creationTimestamp;
   }
 
   public long getId() {
     return id;
   }
 
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public Integer getSessionId() {
-    return sessionId;
-  }
-
-  public void setSessionId(Integer sessionId) {
-    this.sessionId = sessionId;
-  }
-
-  public Integer getAircraftId() {
-    return aircraftId;
-  }
-
-  public void setAircraftId(Integer aircraftId) {
-    this.aircraftId = aircraftId;
-  }
-
   public String getIcaoAddress() {
     return icaoAddress;
   }
 
-  public void setIcaoAddress(String icaoAddress) {
-    this.icaoAddress = icaoAddress;
-  }
-
-  public Integer getFlightId() {
-    return flightId;
-  }
-
-  public void setFlightId(Integer flightId) {
-    this.flightId = flightId;
-  }
-
-  public Instant getCreationTimestamp() {
-    return creationTimestamp;
-  }
-
-  public void setCreationTimestamp(Instant creationTimestamp) {
-    this.creationTimestamp = creationTimestamp;
-  }
-
-  public Instant getReceptionTimestamp() {
-    return receptionTimestamp;
-  }
-
-  public void setReceptionTimestamp(Instant receptionTimestamp) {
-    this.receptionTimestamp = receptionTimestamp;
+  public Instant getTimestamp() {
+    return timestamp;
   }
 
   /**
@@ -131,21 +79,18 @@ public abstract class BaseStationMessage {
   static abstract class Builder<M extends BaseStationMessage, B extends Builder<M, B>> {
     private final String icaoAddress;
     private final Instant creationTimestamp;
-    private final Instant receptionTimestamp;
 
     /**
      * Sole constructor for this class, with parameters for properties common to all BaseStation
-     * message types and to this type.
+     * message types.
      *
      * @param icaoAddress the 24 bit address assigned by the ICAO to an aircraft transponder,
      * represented as a 6 digit hexadecimal number, not null
-     * @param creationTimestamp the instant at which the message was created
-     * @param receptionTimestamp the instant at which the message was received
+     * @param timestamp the instant at which the message was received, not null
      */
-    Builder(String icaoAddress, Instant creationTimestamp, Instant receptionTimestamp) {
-      this.icaoAddress = icaoAddress;
-      this.creationTimestamp = creationTimestamp;
-      this.receptionTimestamp = receptionTimestamp;
+    Builder(String icaoAddress, Instant timestamp) {
+      this.icaoAddress = Objects.requireNonNull(icaoAddress, "ICAO address is required");
+      this.creationTimestamp = Objects.requireNonNull(timestamp, "Timestamp is required");
     }
 
     /**
@@ -154,7 +99,7 @@ public abstract class BaseStationMessage {
      *
      * @return a message of type {@link #<M>}
      */
-    abstract M build();
+    public abstract M build();
 
     /**
      * Gets this builder.
