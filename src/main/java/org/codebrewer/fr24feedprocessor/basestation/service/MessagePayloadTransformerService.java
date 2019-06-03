@@ -39,7 +39,6 @@ public class MessagePayloadTransformerService
       LoggerFactory.getLogger(MessagePayloadTransformerService.class);
 
   private final MessageParsingService messageParsingService;
-  private final AtomicLong invalidMessageCount = new AtomicLong();
   private final AtomicLong validMessageCount = new AtomicLong();
 
   @Autowired
@@ -47,16 +46,10 @@ public class MessagePayloadTransformerService
     this.messageParsingService = messageParsingService;
   }
 
-  private BaseStationMessage incrementInvalidMessageCountAndGetInvalidMessageConstant() {
-    invalidMessageCount.incrementAndGet();
-
-    return INVALID_MESSAGE;
-  }
-
   @Override
   protected BaseStationMessage transformPayload(Object payload) {
     if (payload == null) {
-      return incrementInvalidMessageCountAndGetInvalidMessageConstant();
+      return INVALID_MESSAGE;
     }
 
     final String payloadString;
@@ -74,29 +67,16 @@ public class MessagePayloadTransformerService
     try {
       baseStationMessage = messageParsingService.parseCsvMessageText(payloadString);
     } catch (Exception e) {
-      LOGGER.error("Failed to parse message payload", e);
+      LOGGER.error("Failed to parse message payload: {}: {}", e.getClass().getSimpleName(), e.getMessage());
     }
 
     if (baseStationMessage == null) {
-      return incrementInvalidMessageCountAndGetInvalidMessageConstant();
+      return INVALID_MESSAGE;
     }
 
     validMessageCount.incrementAndGet();
 
     return baseStationMessage;
-  }
-
-  /**
-   * Gets the total number of invalid messages received since application startup. An invalid
-   * message is one of non-zero length that cannot be successfully parsed to produce a
-   * {@code BaseStationMessage} of some type.
-   *
-   * @return the total number of invalid messages received since application startup.
-   */
-  @ManagedAttribute(
-      description = "The total number of invalid messages received since application startup")
-  public long getInvalidMessageCount() {
-    return invalidMessageCount.get();
   }
 
   /**

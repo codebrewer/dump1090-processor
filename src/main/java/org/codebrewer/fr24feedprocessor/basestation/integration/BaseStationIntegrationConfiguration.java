@@ -18,6 +18,7 @@ package org.codebrewer.fr24feedprocessor.basestation.integration;
 
 import org.codebrewer.fr24feedprocessor.basestation.entity.BaseStationMessage;
 import org.codebrewer.fr24feedprocessor.basestation.service.EmptyMessageFilteringService;
+import org.codebrewer.fr24feedprocessor.basestation.service.InvalidMessageFilteringService;
 import org.codebrewer.fr24feedprocessor.basestation.service.MessagePayloadTransformerService;
 import org.codebrewer.fr24feedprocessor.basestation.service.MessageProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class BaseStationIntegrationConfiguration {
   private final MessageProducerService messageProducerService;
   private final EmptyMessageFilteringService emptyMessageFilteringService;
   private final MessagePayloadTransformerService messagePayloadTransformerService;
+  private final InvalidMessageFilteringService invalidMessageFilteringService;
 
   /**
    * Sole constructor for this class.
@@ -51,15 +53,19 @@ public class BaseStationIntegrationConfiguration {
    * @param emptyMessageFilteringService a service for removing empty messages from the message feed
    * @param messagePayloadTransformerService a service for transforming incoming message payloads
    * into {@code BaseStationMessage} objects
+   * @param invalidMessageFilteringService a service for removing invalid messages from the message
+   * feed
    */
   @Autowired
   public BaseStationIntegrationConfiguration(
       MessageProducerService messageProducerService,
       EmptyMessageFilteringService emptyMessageFilteringService,
-      MessagePayloadTransformerService messagePayloadTransformerService) {
+      MessagePayloadTransformerService messagePayloadTransformerService,
+      InvalidMessageFilteringService invalidMessageFilteringService) {
     this.messageProducerService = messageProducerService;
     this.messagePayloadTransformerService = messagePayloadTransformerService;
     this.emptyMessageFilteringService = emptyMessageFilteringService;
+    this.invalidMessageFilteringService = invalidMessageFilteringService;
   }
 
   @Bean
@@ -67,6 +73,7 @@ public class BaseStationIntegrationConfiguration {
     return IntegrationFlows.from(messageProducerService.tcpMessageClient())
                            .filter(emptyMessageFilteringService)
                            .transform(messagePayloadTransformerService)
+                           .filter(invalidMessageFilteringService)
                            .channel(BASE_STATION_MESSAGE_CHANNEL_NAME)
                            .get();
   }

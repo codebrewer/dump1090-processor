@@ -35,11 +35,6 @@ class MessagePayloadTransformerServiceTest {
   private MessageParsingService parsingService;
   private MessagePayloadTransformerService transformerService;
 
-  private void assertThatMessageCountsAllEqualZero() {
-    assertThat(transformerService.getInvalidMessageCount()).isEqualTo(0L);
-    assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
-  }
-
   private BaseStationMessage sendNullMessage() {
     return transformerService.transformPayload(null);
   }
@@ -52,10 +47,9 @@ class MessagePayloadTransformerServiceTest {
 
   @Test
   void shouldReturnInvalidMessageConstantForNullPayload() {
-    assertThatMessageCountsAllEqualZero();
+    assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
     assertThat(sendNullMessage()).isSameAs(INVALID_MESSAGE);
     verifyZeroInteractions(parsingService);
-    assertThat(transformerService.getInvalidMessageCount()).isEqualTo(1L);
     assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
   }
 
@@ -66,10 +60,9 @@ class MessagePayloadTransformerServiceTest {
     final byte[] messagePayload = messageText.getBytes(StandardCharsets.US_ASCII);
 
     when(parsingService.parseCsvMessageText(eq(messageText))).thenReturn(baseStationMessage);
-    assertThatMessageCountsAllEqualZero();
+    assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
     assertThat(transformerService.transformPayload(messagePayload)).isSameAs(baseStationMessage);
     verify(parsingService, Mockito.times(1)).parseCsvMessageText(eq(messageText));
-    assertThat(transformerService.getInvalidMessageCount()).isEqualTo(0L);
     assertThat(transformerService.getValidMessageCount()).isEqualTo(1L);
   }
 
@@ -80,20 +73,18 @@ class MessagePayloadTransformerServiceTest {
     final char[] messagePayload = messageText.toCharArray();
 
     when(parsingService.parseCsvMessageText(eq(messageText))).thenReturn(baseStationMessage);
-    assertThatMessageCountsAllEqualZero();
+    assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
     assertThat(transformerService.transformPayload(messagePayload)).isSameAs(baseStationMessage);
     verify(parsingService, Mockito.times(1)).parseCsvMessageText(eq(messageText));
-    assertThat(transformerService.getInvalidMessageCount()).isEqualTo(0L);
     assertThat(transformerService.getValidMessageCount()).isEqualTo(1L);
   }
 
   @Test
   void shouldReturnInvalidMessageConstantWhenParsingServiceThrowsException() {
     when(parsingService.parseCsvMessageText(anyString())).thenThrow(IllegalArgumentException.class);
-    assertThatMessageCountsAllEqualZero();
+    assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
     assertThat(transformerService.transformPayload(new Object())).isSameAs(INVALID_MESSAGE);
     verify(parsingService, Mockito.times(1)).parseCsvMessageText(anyString());
-    assertThat(transformerService.getInvalidMessageCount()).isEqualTo(1L);
     assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
   }
 
@@ -104,7 +95,7 @@ class MessagePayloadTransformerServiceTest {
     final byte[] messagePayload = messageText.getBytes(StandardCharsets.US_ASCII);
 
     when(parsingService.parseCsvMessageText(eq(messageText))).thenReturn(baseStationMessage);
-    assertThatMessageCountsAllEqualZero();
+    assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
     sendNullMessage();
     sendNullMessage();
     transformerService.transformPayload(messagePayload);
@@ -112,7 +103,6 @@ class MessagePayloadTransformerServiceTest {
     transformerService.transformPayload(messagePayload);
     transformerService.transformPayload(messagePayload);
     sendNullMessage();
-    assertThat(transformerService.getInvalidMessageCount()).isEqualTo(4L);
     assertThat(transformerService.getValidMessageCount()).isEqualTo(3L);
   }
 }

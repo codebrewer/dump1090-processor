@@ -20,6 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.codebrewer.fr24feedprocessor.basestation.service.EmptyMessageFilteringService;
+import org.codebrewer.fr24feedprocessor.basestation.service.InvalidMessageFilteringService;
 import org.codebrewer.fr24feedprocessor.basestation.service.MessagePayloadTransformerService;
 import org.codebrewer.fr24feedprocessor.basestation.service.MessageProducerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,22 +30,28 @@ import org.springframework.integration.ip.tcp.TcpReceivingChannelAdapter;
 
 class BaseStationIntegrationConfigurationTest {
   private MessageProducerService producerService;
-  private EmptyMessageFilteringService filteringService;
+  private EmptyMessageFilteringService emptyMessageFilteringService;
   private MessagePayloadTransformerService transformerService;
+  private InvalidMessageFilteringService invalidMessageFilteringService;
   private TcpReceivingChannelAdapter channelAdapter;
 
   @BeforeEach
   void setUp() {
     producerService = Mockito.mock(MessageProducerService.class);
-    filteringService = Mockito.mock(EmptyMessageFilteringService.class);
+    emptyMessageFilteringService = Mockito.mock(EmptyMessageFilteringService.class);
     transformerService = Mockito.mock(MessagePayloadTransformerService.class);
+    invalidMessageFilteringService = Mockito.mock(InvalidMessageFilteringService.class);
     channelAdapter = Mockito.mock(TcpReceivingChannelAdapter.class);
   }
 
   @Test
   void shouldCreateIntegrationFlow() {
     final BaseStationIntegrationConfiguration configuration =
-        new BaseStationIntegrationConfiguration(producerService, filteringService, transformerService);
+        new BaseStationIntegrationConfiguration(
+            producerService,
+            emptyMessageFilteringService,
+            transformerService,
+            invalidMessageFilteringService);
 
     when(producerService.tcpMessageClient()).thenReturn(channelAdapter);
     configuration.tcpMessageClient();

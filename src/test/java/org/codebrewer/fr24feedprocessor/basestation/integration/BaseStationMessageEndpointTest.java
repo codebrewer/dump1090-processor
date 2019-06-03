@@ -52,13 +52,6 @@ class BaseStationMessageEndpointTest {
   }
 
   @Test
-  void shouldNotConsumeInvalidBaseStationMessage() {
-    endpoint = new BaseStationMessageEndpoint(repository, true);
-    endpoint.consume(BaseStationMessage.INVALID_MESSAGE);
-    verifyZeroInteractions(repository);
-  }
-
-  @Test
   void shouldAllowMessagePersistenceToBeDisabled() {
     endpoint = new BaseStationMessageEndpoint(repository, true);
     assertThat(endpoint).isPersistMessages();
