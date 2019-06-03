@@ -16,10 +16,8 @@
 
 package org.codebrewer.fr24feedprocessor.basestation.integration;
 
-import static org.codebrewer.fr24feedprocessor.basestation.entity.BaseStationMessage.INVALID_MESSAGE;
 import static org.codebrewer.fr24feedprocessor.basestation.integration.BaseStationIntegrationConfiguration.BASE_STATION_MESSAGE_CHANNEL_NAME;
 
-import java.util.Objects;
 import org.codebrewer.fr24feedprocessor.basestation.entity.BaseStationMessage;
 import org.codebrewer.fr24feedprocessor.basestation.repository.BaseStationMessageRepository;
 import org.slf4j.Logger;
@@ -78,7 +76,7 @@ public class BaseStationMessageEndpoint {
   @SuppressWarnings("UnresolvedMessageChannel")
   @ServiceActivator(inputChannel = BASE_STATION_MESSAGE_CHANNEL_NAME)
   public void consume(@Payload BaseStationMessage baseStationMessage) {
-    if (persistMessages && !Objects.equals(baseStationMessage, INVALID_MESSAGE)) {
+    if (persistMessages) {
       repository.save(baseStationMessage);
     }
   }

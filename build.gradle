@@ -2,7 +2,7 @@ import static org.gradle.api.tasks.wrapper.Wrapper.DistributionType
 
 buildscript {
   ext {
-    springBootVersion = '2.1.4.RELEASE'
+    springBootVersion = '2.1.5.RELEASE'
   }
   repositories {
     mavenCentral()
@@ -41,20 +41,19 @@ repositories {
   }
 }
 
-ext['hibernate.version'] = '5.4.2.Final'
+ext['hibernate.version'] = '5.4.3.Final'
 
 dependencies {
-  compile('org.hibernate:hibernate-spatial:5.4.2.Final')
+  compile('org.hibernate:hibernate-spatial:5.4.3.Final')
   compile('org.springframework.boot:spring-boot-starter-actuator')
   compile('org.springframework.boot:spring-boot-starter-data-jpa')
   compile('org.springframework.boot:spring-boot-starter-integration')
   compile('org.springframework.boot:spring-boot-starter-web')
   compile('org.springframework.integration:spring-integration-ip')
-  runtime('org.postgresql:postgresql')
   runtime('org.opengeo:geodb:0.9')
   testCompile('org.springframework.boot:spring-boot-starter-test')
   testCompile('org.junit.jupiter:junit-jupiter:5.4.2')
-  testCompile('org.mockito:mockito-junit-jupiter:2.27.0')
+  testCompile('org.mockito:mockito-junit-jupiter:2.28.2')
   testCompile('org.assertj:assertj-core:3.12.2')
   testCompile('com.openpojo:openpojo:0.8.12')
 }

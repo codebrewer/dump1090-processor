@@ -47,5 +47,5 @@ public enum StatusMessageType {
   /**
    * OK/Reset
    */
-  OK;
+  OK
 }

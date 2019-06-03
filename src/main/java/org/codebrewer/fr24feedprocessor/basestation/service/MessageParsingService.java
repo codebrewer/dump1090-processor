@@ -48,7 +48,7 @@ public class MessageParsingService {
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageParsingService.class);
   private static final Geographic2DCoordinateReferenceSystem COORDINATE_REFERENCE_SYSTEM =
       CrsRegistry.getGeographicCoordinateReferenceSystemForEPSG(4326);
-  private static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
   private static Instant parseTimestamp(String dateToken, String timeToken) {
     if (StringUtils.isEmpty(dateToken) || StringUtils.isEmpty(timeToken)) {
