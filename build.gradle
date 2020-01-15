@@ -68,7 +68,7 @@ jacocoTestReport {
   afterEvaluate {
     getClassDirectories().setFrom(classDirectories.files.collect {
       fileTree(dir: it, exclude: [
-              'org/codebrewer/fr24feedprocessor/Fr24feedProcessorApplication.class'
+              'org/codebrewer/dump1090processor/Dump1090ProcessorApplication.class'
       ])
     })
   }
