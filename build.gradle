@@ -44,18 +44,18 @@ repositories {
 ext['hibernate.version'] = '5.4.3.Final'
 
 dependencies {
-  compile('org.hibernate:hibernate-spatial:5.4.3.Final')
-  compile('org.springframework.boot:spring-boot-starter-actuator')
-  compile('org.springframework.boot:spring-boot-starter-data-jpa')
-  compile('org.springframework.boot:spring-boot-starter-integration')
-  compile('org.springframework.boot:spring-boot-starter-web')
-  compile('org.springframework.integration:spring-integration-ip')
-  runtime('org.opengeo:geodb:0.9')
-  testCompile('org.springframework.boot:spring-boot-starter-test')
-  testCompile('org.junit.jupiter:junit-jupiter:5.4.2')
-  testCompile('org.mockito:mockito-junit-jupiter:2.28.2')
-  testCompile('org.assertj:assertj-core:3.12.2')
-  testCompile('com.openpojo:openpojo:0.8.12')
+  implementation('org.hibernate:hibernate-spatial:5.4.3.Final')
+  implementation('org.springframework.boot:spring-boot-starter-actuator')
+  implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+  implementation('org.springframework.boot:spring-boot-starter-integration')
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.springframework.integration:spring-integration-ip')
+  runtimeOnly('org.opengeo:geodb:0.9')
+  testImplementation('org.springframework.boot:spring-boot-starter-test')
+  testImplementation('org.junit.jupiter:junit-jupiter:5.4.2')
+  testImplementation('org.mockito:mockito-junit-jupiter:2.28.2')
+  testImplementation('org.assertj:assertj-core:3.12.2')
+  testImplementation('com.openpojo:openpojo:0.8.12')
 }
 
 jacocoTestReport {
