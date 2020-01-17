@@ -2,7 +2,7 @@ import static org.gradle.api.tasks.wrapper.Wrapper.DistributionType
 
 buildscript {
   ext {
-    springBootVersion = '2.1.5.RELEASE'
+    springBootVersion = '2.2.3.RELEASE'
   }
   repositories {
     mavenCentral()
@@ -41,10 +41,10 @@ repositories {
   }
 }
 
-ext['hibernate.version'] = '5.4.3.Final'
+ext['hibernate.version'] = '5.4.10.Final'
 
 dependencies {
-  implementation('org.hibernate:hibernate-spatial:5.4.3.Final')
+  implementation('org.hibernate:hibernate-spatial:5.4.10.Final')
   implementation('org.springframework.boot:spring-boot-starter-actuator')
   implementation('org.springframework.boot:spring-boot-starter-data-jpa')
   implementation('org.springframework.boot:spring-boot-starter-integration')
@@ -52,10 +52,10 @@ dependencies {
   implementation('org.springframework.integration:spring-integration-ip')
   runtimeOnly('org.opengeo:geodb:0.9')
   testImplementation('org.springframework.boot:spring-boot-starter-test')
-  testImplementation('org.junit.jupiter:junit-jupiter:5.4.2')
-  testImplementation('org.mockito:mockito-junit-jupiter:2.28.2')
-  testImplementation('org.assertj:assertj-core:3.12.2')
-  testImplementation('com.openpojo:openpojo:0.8.12')
+  testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+  testImplementation('org.mockito:mockito-junit-jupiter:3.2.4')
+  testImplementation('org.assertj:assertj-core:3.14.0')
+  testImplementation('com.openpojo:openpojo:0.8.13')
 }
 
 jacocoTestReport {
