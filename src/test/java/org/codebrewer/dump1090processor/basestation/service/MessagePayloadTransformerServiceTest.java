@@ -21,7 +21,7 @@ import static org.codebrewer.dump1090processor.basestation.entity.BaseStationMes
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.nio.charset.StandardCharsets;
@@ -49,7 +49,7 @@ class MessagePayloadTransformerServiceTest {
   void shouldReturnInvalidMessageConstantForNullPayload() {
     assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
     assertThat(sendNullMessage()).isSameAs(INVALID_MESSAGE);
-    verifyZeroInteractions(parsingService);
+    verifyNoInteractions(parsingService);
     assertThat(transformerService.getValidMessageCount()).isEqualTo(0L);
   }
 

@@ -18,7 +18,7 @@ package org.codebrewer.dump1090processor.basestation.integration;
 
 import static org.codebrewer.dump1090processor.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.codebrewer.dump1090processor.basestation.entity.BaseStationMessage;
 import org.codebrewer.dump1090processor.basestation.repository.BaseStationMessageRepository;
@@ -41,7 +41,7 @@ class BaseStationMessageEndpointTest {
   void shouldNotPersistBaseStationMessagesIfMessagePersistenceDisabled() {
     endpoint = new BaseStationMessageEndpoint(repository, false);
     endpoint.consume(baseStationMessage);
-    verifyZeroInteractions(repository);
+    verifyNoInteractions(repository);
   }
 
   @Test
@@ -58,7 +58,7 @@ class BaseStationMessageEndpointTest {
     endpoint.setPersistMessages(false);
     assertThat(endpoint).isNotPersistMessages();
     endpoint.consume(baseStationMessage);
-    verifyZeroInteractions(repository);
+    verifyNoInteractions(repository);
   }
 
   @Test
